@@ -1,0 +1,10 @@
+.container-login {
+    height: 100%;
+    background-color: #efefef;
+    padding-top: 100px;
+}
+
+.card-login {
+    width: 400px;
+    margin: 0 auto;
+}

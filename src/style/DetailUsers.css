@@ -1,0 +1,26 @@
+.user-profile-container {
+  background-color: #f0f2f5;
+}
+
+.user-profile-card {
+  width: 100%;
+}
+
+.user-profile-header {
+  text-align: center;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.user-profile-avatar {
+  margin-bottom: 20px;
+}
+
+.user-details {
+  margin-bottom: 10px;
+}
+
+.button_logout {
+  margin-top: 10px;
+  text-align: center;
+  font-weight: bold;
+}
