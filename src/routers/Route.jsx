@@ -12,6 +12,9 @@ import SettingUsers from "../pages/customer/SettingUsers";
 // import ProductDetailsPage from "../pages/customer/ProductDetailsPage";
 import HomePage from "../pages/shared/HomePage";
 import Cart from "../pages/shared/Cart";
+import HomeUser from "../pages/shared/HomeUser";
+import CartUser from "../pages/shared/CartUser";
+import Checkout from "../components/common/Checkout";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -48,8 +51,16 @@ const router = createBrowserRouter([
         element: <HomeDashboard />,
       },
       {
-        path: "/home-login",
-        element: <Cart />,
+        path: "/user/home",
+        element: <HomeUser />,
+      },
+      {
+        path: "/user/cart",
+        element: <CartUser />,
+      },
+      {
+        path: "/user/checkout",
+        element: <Checkout />,
       },
 
       // {

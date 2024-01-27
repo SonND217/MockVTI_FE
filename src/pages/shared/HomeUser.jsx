@@ -10,7 +10,7 @@ import BtnBackToTop from "../../components/common/BtnBackToTop";
 import DetailProduct from "../../components/common/DetailProduct";
 import Checkout from "../../components/common/Checkout";
 import HomeShop from "../Dashboard/HomeLayout";
-function HomePage() {
+function HomeUser() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -59,8 +59,6 @@ function HomePage() {
   };
   return (
     <div>
-      <Topbar></Topbar>
-      <Navbar></Navbar>
       <Carousel></Carousel>
       <Featured></Featured>
       <Categories></Categories>
@@ -72,4 +70,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default HomeUser;
