@@ -5,7 +5,7 @@ import Breadcrumb from "../../components/common/Breadcrumb";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinus, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import imagePlaceholder from "../../assets/img/cat-1.jpg";
-import HomeShop from "./HomeShop";
+import HomeShop from "../Dashboard/HomeLayout";
 
 function Cart() {
   const [cartItems, setCartItems] = useState([]);

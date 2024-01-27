@@ -66,7 +66,6 @@ function LayoutUser() {
           </Content>
         </LayoutAntd>
       </LayoutAntd>
-      ;
     </div>
   );
 }

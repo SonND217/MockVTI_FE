@@ -1,32 +1,21 @@
 import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Spin } from "antd";
 import {
   faShoppingCart,
   faHeart,
   faSyncAlt,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import { data } from "jquery";
-import { json } from "react-router-dom";
+import { Spin } from "antd";
 
 function Product() {
-  // State for products
   const [products, setProducts] = useState([]);
-
-  // State for cart items
   const [cartItems, setCartItems] = useState([]);
-
-  // State for current page and items per page
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
-
-  // State for storing images locally
   const [productImages, setProductImages] = useState([]);
-
   const [loading, setLoading] = useState(false);
 
-  // Function to fetch images from API
   const fetchImagesFromApi = async (products) => {
     const imagePromises = products.map(async (product) => {
       try {
@@ -44,7 +33,6 @@ function Product() {
 
     try {
       const imageUrls = await Promise.all(imagePromises);
-      // Use the callback function to ensure the state is updated correctly
       setProductImages((prevImages) => [...prevImages, ...imageUrls]);
       return imageUrls;
     } catch (error) {
@@ -53,8 +41,8 @@ function Product() {
     }
   };
 
-  // Function to fetch data (products and images)
   const fetchData = async (nextPage) => {
+    setLoading(true);
     try {
       const response = await fetch(
         `http://localhost:8088/api/v1/products?page=${nextPage}&limit=${itemsPerPage}`
@@ -63,7 +51,6 @@ function Product() {
       if (newData.products.length > 0) {
         setCurrentPage(nextPage);
         setProducts((prevProducts) => {
-          // Filter out duplicates based on product id
           const uniqueProducts = newData.products.filter(
             (newProduct) =>
               !prevProducts.some(
@@ -72,164 +59,42 @@ function Product() {
           );
           return [...prevProducts, ...uniqueProducts];
         });
-
-        // Fetch and update images for new products
-        const imageUrls = await fetchImagesFromApi(newData.products);
-        setProductImages((prevImages) => [...prevImages, ...imageUrls]);
+        await fetchImagesFromApi(newData.products);
       } else {
-        // No more products to load
         console.log("No more products to load");
       }
     } catch (error) {
       console.error("Error fetching data:", error);
-      // Update UI to display an error message
     } finally {
       setLoading(false);
     }
   };
 
-  // Function to fetch cart items and images
-  const fetchCartItemsAndImages = async () => {
-    try {
-      // Fetch images
-      const imageUrls = await fetchImagesFromApi(products);
-      setProductImages(imageUrls);
-
-      // Fetch cart data
-      const cartResponse = await fetch(
-        `http://localhost:3000/cart?_page=${currentPage}&_limit=${itemsPerPage}`,
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      const cartData = await cartResponse.json();
-
-      // Map cart items with product details
-      const cartItemsWithDetails = cartData.map((cartItem) => {
-        const product = products.find((p) => p.id === cartItem.productId);
-        return {
-          ...cartItem,
-          name: product?.name,
-          price: product?.price,
-          description: product?.description,
-          total: product?.price * cartItem.quantity,
-        };
-      });
-
-      setCartItems(cartItemsWithDetails);
-    } catch (error) {
-      console.error("Error fetching cart items and images:", error);
-    }
-  };
-
-  // UseEffect to fetch products
   useEffect(() => {
     fetchData(currentPage);
   }, [currentPage, itemsPerPage]);
 
-  // UseEffect to fetch images and cart data
-  useEffect(() => {
-    if (products.length > 0) {
-      fetchCartItemsAndImages();
-    }
-  }, [products, currentPage, itemsPerPage]);
-
-  // Function to add a product to the cart
   const addToCart = (product) => {
-    const userId = null;
-    const sessionToken = "session_xyz123";
+    const currentCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+    const existingItem = currentCart.find(
+      (item) => item.product_id === product.id
+    );
 
-    fetch("http://localhost:3000/cart")
-      .then((response) => response.json())
-      .then((cartItems) => {
-        const existingItem = cartItems.find(
-          (item) => item.productId === product.id
-        );
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      currentCart.push({ product_id: product.id, quantity: 1 });
+    }
 
-        if (existingItem) {
-          // Update existing item quantity
-          fetch(`http://localhost:3000/cart/${existingItem.id}`, {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              ...existingItem,
-              quantity: existingItem.quantity + 1,
-            }),
-          });
-        } else {
-          // Add new item to the cart
-          fetch("http://localhost:3000/cart", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              productId: product.id,
-              quantity: 1,
-              userId,
-              sessionToken,
-            }),
-          });
-        }
-      });
+    localStorage.setItem("cartItems", JSON.stringify(currentCart));
   };
 
-  // Function to load more products
   const loadMoreProducts = () => {
     setLoading(true);
     setTimeout(() => {
       fetchData(currentPage + 1);
     }, 3000);
   };
-
-  // ...
-
-  // UseEffect to fetch products
-  useEffect(() => {
-    const fetchData = async (nextPage) => {
-      try {
-        const response = await fetch(
-          `http://localhost:8088/api/v1/products?page=${nextPage}&limit=${itemsPerPage}`
-        );
-        const newData = await response.json();
-
-        if (newData.products.length > 0) {
-          setCurrentPage(nextPage);
-          setProducts((prevProducts) => {
-            // Filter out duplicates based on product id
-            const uniqueProducts = newData.products.filter(
-              (newProduct) =>
-                !prevProducts.some(
-                  (existingProduct) => newProduct.id === existingProduct.id
-                )
-            );
-            return [...prevProducts, ...uniqueProducts];
-          });
-
-          // Fetch and update images for new products
-          const imageUrls = await fetchImagesFromApi(newData.products);
-          setProductImages((prevImages) => [...prevImages, ...imageUrls]);
-
-          // Log the new products to the console
-          console.log("New Products:", newData.products);
-        } else {
-          // No more products to load
-          console.log("No more products to load");
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        // Update UI to display an error message
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData(currentPage);
-  }, [currentPage, itemsPerPage]);
-
-  // ...
 
   return (
     <div>
@@ -254,13 +119,10 @@ function Product() {
                     >
                       <FontAwesomeIcon icon={faShoppingCart} />
                     </button>
-                    <button className="btn btn-outline-dark btn-square" href="">
+                    <button className="btn btn-outline-dark btn-square">
                       <FontAwesomeIcon icon={faHeart} />
                     </button>
-                    <button className="btn btn-outline-dark btn-square" href="">
-                      <FontAwesomeIcon icon={faSyncAlt} />
-                    </button>
-                    <button className="btn btn-outline-dark btn-square" href="">
+                    <button className="btn btn-outline-dark btn-square">
                       <FontAwesomeIcon icon={faSearch} />
                     </button>
                   </div>

@@ -4,10 +4,15 @@ import {
   MenuUnfoldOutlined,
   UnorderedListOutlined,
   ProfileOutlined,
+  UserOutlined,
+  EditOutlined,
+  HomeOutlined,
+  ShoppingCartOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import { Layout as LayoutAntd, Menu, Button, theme } from "antd";
 import { Outlet, useNavigate } from "react-router-dom";
-import HomeShop from "../shared/HomeShop";
+import HomeLayout from "./HomeLayout";
 
 const { Header, Sider, Content } = LayoutAntd;
 const getUserRole = () => {
@@ -51,25 +56,33 @@ const Layout = () => {
             icon: <UnorderedListOutlined />,
             label: "Quản lí danh mục",
           },
-          // thêm các menu item khác cho admin
         ]
       : [
           {
             key: "/dashboard",
-            icon: <ProfileOutlined />,
+            icon: <UserOutlined />,
             label: "Hồ sơ tài khoản",
           },
           {
             key: "/setting-Profile",
-            icon: <UnorderedListOutlined />,
+            icon: <EditOutlined />,
             label: "Chỉnh sửa thông tin",
           },
           {
-            key: "/home-login",
-            icon: <UnorderedListOutlined />,
-            label: "Chỉnh sửa thông tin",
+            key: "/user/home",
+            icon: <HomeOutlined />,
+            label: "Trang Chủ",
           },
-          // thêm các menu item khác cho user
+          {
+            key: "/user/cart",
+            icon: <ShoppingCartOutlined />,
+            label: "Giỏ hàng",
+          },
+          {
+            key: "/user/checkout",
+            icon: <CheckCircleOutlined />,
+            label: "Hoàn tất đặt hàng",
+          },
         ];
 
   return userRole === "Admin" ? (
@@ -111,52 +124,52 @@ const Layout = () => {
     </LayoutAntd>
   ) : (
     // thay bang home user sau khi dang nhap
-    <HomeShop>
-      <div className="wrapper-user-layout">
-        <LayoutAntd className="user-layout">
-          <Sider
-            trigger={null}
-            collapsible
-            collapsed={collapsed}
-            width={485} // Đặt độ rộng khi mở ra
-            collapsedWidth={63.3} // Đặt độ rộng khi đóng vào
-          >
-            <div className="demo-logo-vertical" />
-            <Menu
-              theme="dark"
-              mode="inline"
-              defaultSelectedKeys={["1"]}
-              items={items}
-              onClick={hanleMenuClick}
-            />
-          </Sider>
-          <LayoutAntd>
-            <Header style={{ padding: 0, background: colorBgContainer }}>
-              <Button
-                type="text"
-                icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                onClick={() => setCollapsed(!collapsed)}
-                style={{
-                  fontSize: "16px",
-                  width: 50,
-                  height: 50,
-                }}
-              />
-            </Header>
-            <Content
+    <HomeLayout>
+      {/* <div className="wrapper-user-layout"> */}
+      <LayoutAntd className="user-layout">
+        <Sider
+          trigger={null}
+          collapsible
+          collapsed={collapsed}
+          width={200} // Đặt độ rộng khi mở ra
+          collapsedWidth={63.3} // Đặt độ rộng khi đóng vào
+        >
+          <div className="demo-logo-vertical" />
+          <Menu
+            theme="dark"
+            mode="inline"
+            defaultSelectedKeys={["1"]}
+            items={items}
+            onClick={hanleMenuClick}
+          />
+        </Sider>
+        <LayoutAntd>
+          <Header style={{ padding: 0, background: colorBgContainer }}>
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
               style={{
-                margin: "0px 0px",
-                padding: 24,
-                minHeight: 280,
-                background: colorBgContainer,
+                fontSize: "16px",
+                width: 50,
+                height: 50,
               }}
-            >
-              <>{<Outlet />}</>
-            </Content>
-          </LayoutAntd>
+            />
+          </Header>
+          <Content
+            style={{
+              margin: "0px 0px",
+              padding: 24,
+              minHeight: 280,
+              background: colorBgContainer,
+            }}
+          >
+            <>{<Outlet />}</>
+          </Content>
         </LayoutAntd>
-      </div>
-    </HomeShop>
+      </LayoutAntd>
+      {/* </div> */}
+    </HomeLayout>
   );
 };
 
