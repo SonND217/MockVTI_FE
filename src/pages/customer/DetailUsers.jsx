@@ -8,8 +8,8 @@ import {
 } from "@ant-design/icons";
 import "../../style/DetailUsers.css";
 import { useNavigate } from "react-router-dom";
-import userService from "../../services/userService";
 import { useState, useEffect } from "react";
+import instance from "../../services/axiosClient";
 
 const DetailUsers = ({ userId }) => {
   const navigate = useNavigate();
@@ -18,8 +18,19 @@ const DetailUsers = ({ userId }) => {
   useEffect(() => {
     const getUserDetail = async () => {
       try {
-        const response = await userService.getUserByID(userId);
-        setUser(response.data);
+        const response = await instance.post(
+          `http://localhost:8088/api/v1/users/details`
+        );
+        console.log(response);
+        // setUser(response);
+        const formattedDateOfBirth = new Date(
+          response.date_of_birth
+        ).toLocaleDateString();
+
+        setUser({
+          ...response,
+          date_of_birth: formattedDateOfBirth,
+        });
       } catch (error) {
         notification.error({ message: "Error loading user" });
       }
@@ -29,14 +40,11 @@ const DetailUsers = ({ userId }) => {
     }
   }, [userId]);
 
-  console.log(userId);
-  console.log(user);
-
   const logOut = () => {
     localStorage.clear();
-    navigate("/login");
+    navigate("/home");
   };
-
+  console.log(user);
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -45,39 +53,41 @@ const DetailUsers = ({ userId }) => {
     <div className="user-profile-container">
       <Card bordered={false} className="user-profile-card">
         <div className="user-profile-header">
-          <Avatar size={120} src={user.image} className="user-profile-avatar" />
-          <h2>
-            {user.firstName} {user.lastName}
-          </h2>
+          {/* <Avatar size={120} src={user.image} className="user-profile-avatar" /> */}
         </div>
         <div className="user-details">
-          <h3>Contact Information</h3>
+          <h3>Hồ sơ tài khoản</h3>
           <div className="user-details-section">
             <List>
               <List.Item>
                 <CalendarOutlined
                   style={{ paddingRight: "20px", fontSize: "30px" }}
                 />{" "}
-                {user.birthDate}
+                {user.fullname}
+              </List.Item>
+              <List.Item>
+                <CalendarOutlined
+                  style={{ paddingRight: "20px", fontSize: "30px" }}
+                />{" "}
+                {user.date_of_birth}
               </List.Item>
               <List.Item>
                 <UserOutlined
                   style={{ paddingRight: "20px", fontSize: "30px" }}
                 />{" "}
-                {user.gender}
+                {user.address}
               </List.Item>
               <List.Item>
                 <PhoneOutlined
                   style={{ paddingRight: "20px", fontSize: "30px" }}
                 />{" "}
-                {user.phone}
+                {user.phone_number}
               </List.Item>
               <List.Item>
                 <HomeOutlined
                   style={{ paddingRight: "20px", fontSize: "30px" }}
                 />{" "}
-                {user.address.address}, {user.address.city},{" "}
-                {user.address.state} {user.address.postalCode}
+                {user.address}, {user.city}, {user.state} {user.postalCode}{" "}
               </List.Item>
               <List.Item>
                 <MailOutlined

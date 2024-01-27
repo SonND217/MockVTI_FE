@@ -1,13 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import Layout from "../pages/shared/Layout";
-import Login from "../pages/shared/form/LoginForm";
+import Layout from "../pages/Dashboard/Layout";
+import LoginAndRegisterForm from "../pages/shared/form/LoginAndRegisterForm";
 import NotFound from "../components/common/NotFound";
-import Register from "../pages/shared/form/RegisterForm";
-import Home from "../pages/shared/Home";
-import Product from "../pages/product/ProductsTable";
+import HomeDashboard from "../pages/Dashboard/HomeDashboard";
+import ProductTable from "../pages/Dashboard/ProductsTable";
+import OrderTable from "../pages/Dashboard/OrderTable";
+import CategoryTable from "../pages/Dashboard/CategoryTable";
 import PrivateRoute from "../routers/PrivateRoute";
-import ProductUserView from "../pages/customer/ProductUserView";
-import ProductDetailsPage from "../pages/customer/ProductDetailsPage";
+import SettingUsers from "../pages/customer/SettingUsers";
+// import ProductUserView from "../pages/customer/ProductUserView";
+// import ProductDetailsPage from "../pages/customer/ProductDetailsPage";
+import HomePage from "../pages/shared/HomePage";
+import Cart from "../pages/shared/Cart";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -20,29 +24,55 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />,
+        element: <HomeDashboard />,
       },
       {
-        path: "product",
-        element: <Product />,
+        path: "/product-list",
+        element: <ProductTable />,
       },
       {
-        path: "/ProductUserView",
-        element: <ProductUserView />,
+        path: "/order-list",
+        element: <OrderTable />,
+      },
+      ,
+      {
+        path: "/category-list",
+        element: <CategoryTable />,
       },
       {
-        path: "/ProductUserView/:id",
-        element: <ProductDetailsPage />,
+        path: "/setting-Profile",
+        element: <SettingUsers />,
       },
+      {
+        path: "/dashboard",
+        element: <HomeDashboard />,
+      },
+      {
+        path: "/home-login",
+        element: <Cart />,
+      },
+
+      // {
+      //   path: "/ProductUserView",
+      //   element: <ProductUserView />,
+      // },
+      // {
+      //   path: "/ProductUserView/:id",
+      //   element: <ProductDetailsPage />,
+      // },
     ],
   },
   {
-    path: "/login",
-    element: <Login />,
+    path: "/LoginAndRegisterForm",
+    element: <LoginAndRegisterForm />,
   },
   {
-    path: "/register",
-    element: <Register />,
+    path: "/home",
+    element: <HomePage />,
+  },
+  {
+    path: "/cart",
+    element: <Cart />,
   },
 ]);
 

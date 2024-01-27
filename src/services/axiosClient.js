@@ -1,8 +1,8 @@
 import axios from "axios";
-import { getAcessToken } from "../utils/helper";
+import { getAccessToken } from "../utils/helper"; // Sử dụng tên hàm đúng
 
 const instance = axios.create({
-  baseURL: "https://dummyjson.com/", // base URL
+  baseURL: "http://localhost:8088/api/v1/", // base URL
   timeout: 5000, // thời gian hết hạn call API
   headers: { "Content-Type": "application/json" },
 });
@@ -10,9 +10,10 @@ const instance = axios.create({
 // interceptor can thiệp vào quá trình request
 instance.interceptors.request.use(
   function (config) {
-    const accessToken = getAcessToken();
+    // Lấy accessToken mỗi lần gửi request để đảm bảo token là mới nhất
+    const accessToken = getAccessToken(); // Sử dụng hàm helper để lấy token
     if (accessToken) {
-      config.headers["Authorization"] = `Bearer ` + accessToken;
+      config.headers["Authorization"] = `Bearer ${accessToken}`;
     }
     return config;
   },

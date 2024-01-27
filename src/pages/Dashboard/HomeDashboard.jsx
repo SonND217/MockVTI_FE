@@ -1,7 +1,7 @@
 import { getUserInfo } from "../../utils/helper";
 import DetailUsers from "../customer/DetailUsers";
-
-const Home = () => {
+import Topbar from "../../components/common/Topbar";
+const HomeDashboard = () => {
   const userInfo = getUserInfo();
 
   console.log("user", userInfo);
@@ -9,12 +9,12 @@ const Home = () => {
   return (
     <div>
       <h1>
-        Welcome <span style={{ color: "blue" }}>{userInfo.username}</span>
+        Chào mừng <span style={{ color: "blue" }}>{userInfo.username}</span>
       </h1>
       <h3>
-        This is account of{" "}
+        Đây là tài khoản của{" "}
         <span style={{ color: "GrayText" }}>
-          {userInfo.username === "kminchelle" ? "Admin" : "User"}
+          {userInfo.roles == "ROLE_ADMIN" ? "Quản trị viên" : "Người dùng"}
         </span>
       </h3>
       <DetailUsers userId={userInfo.id} />
@@ -22,4 +22,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeDashboard;
