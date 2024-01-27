@@ -1,0 +1,79 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Sản phẩm A",
+      "price": 100,
+      "description": "Mô tả sản phẩm A"
+    },
+    {
+      "id": 2,
+      "name": "Sản phẩm B",
+      "price": 200,
+      "description": "Mô tả sản phẩm B"
+    },
+    {
+      "id": 3,
+      "name": "Sản phẩm C",
+      "price": 200,
+      "description": "Mô tả sản phẩm C"
+    },
+    {
+      "id": 4,
+      "name": "Sản phẩm D",
+      "price": 200,
+      "description": "Mô tả sản phẩm D"
+    }
+  ],
+  "cart": [
+    {
+      "quantity": 6,
+      "id": "784c"
+    },
+    {
+      "id": "e15d",
+      "productId": 1,
+      "quantity": 3,
+      "userId": null,
+      "sessionToken": "session_xyz123"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "name": "Nguyen Van A",
+      "email": "nguyenvana@example.com",
+      "purchaseHistory": [
+        {
+          "orderId": 101,
+          "items": [
+            {
+              "productId": 1,
+              "quantity": 1
+            },
+            {
+              "productId": 2,
+              "quantity": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Tran Thi B",
+      "email": "tranthib@example.com",
+      "purchaseHistory": [
+        {
+          "orderId": 102,
+          "items": [
+            {
+              "productId": 4,
+              "quantity": 1
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
