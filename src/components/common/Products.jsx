@@ -122,8 +122,8 @@ function Product() {
             body: JSON.stringify({
               productId: product.id,
               quantity: 1,
-              userId, // Thêm userId
-              sessionToken, // Thêm sessionToken
+              userId,
+              sessionToken,
             }),
           }).then();
         }

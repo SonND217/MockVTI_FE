@@ -11,7 +11,6 @@ import SettingUsers from "../pages/customer/SettingUsers";
 // import ProductUserView from "../pages/customer/ProductUserView";
 // import ProductDetailsPage from "../pages/customer/ProductDetailsPage";
 import HomePage from "../pages/shared/HomePage";
-import Cart from "../pages/shared/Cart";
 import HomeUser from "../pages/shared/HomeUser";
 import CartUser from "../pages/shared/CartUser";
 import Checkout from "../components/common/Checkout";
@@ -80,10 +79,6 @@ const router = createBrowserRouter([
   {
     path: "/home",
     element: <HomePage />,
-  },
-  {
-    path: "/cart",
-    element: <Cart />,
   },
 ]);
 

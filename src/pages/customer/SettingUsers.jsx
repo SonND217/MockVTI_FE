@@ -32,7 +32,7 @@ const SettingUsers = () => {
     if (userInfo.id) {
       getUserDetail();
     }
-  }, [userInfo.id, form]);
+  }, [userInfo, form]);
 
   const onFinish = async (values) => {
     // Chuyển đổi giá trị ngày tháng năm thành timestamp

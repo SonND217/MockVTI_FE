@@ -4,11 +4,19 @@ import { faMinus, faPlus, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 function CartUser() {
   const [cartItems, setCartItems] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
+
   useEffect(() => {
     const storedCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     fetchProductDetails(storedCartItems);
   }, []);
+
+  useEffect(() => {
+    const totalPrice = calculateTotal();
+    setTotalPrice(totalPrice);
+    localStorage.setItem("cartTotalPrice", totalPrice.toFixed(2));
+  }, [cartItems]);
 
   const fetchProductDetails = async (items) => {
     const productDetails = await Promise.all(
@@ -32,10 +40,6 @@ function CartUser() {
       })
     );
     setCartItems(productDetails.filter((item) => item !== null));
-  };
-
-  const navigateToCheckout = () => {
-    navigate("/user/checkout");
   };
 
   const updateQuantity = (productId, newQuantity) => {
@@ -75,8 +79,8 @@ function CartUser() {
     );
   };
 
-  const handleCheckout = () => {
-    history.push("/user/checkout"); // Điều hướng đến trang Checkout
+  const navigateToCheckout = () => {
+    navigate("/user/checkout");
   };
 
   return (
@@ -102,7 +106,7 @@ function CartUser() {
                       <img
                         src={`http://localhost:8088/api/v1/products/images/${item.thumbnail}`}
                         alt={item.name}
-                        className="img-thumbnail" // Sử dụng class CSS
+                        className="img-thumbnail"
                       />
                     </td>
                     <td>
