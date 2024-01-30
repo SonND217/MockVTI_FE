@@ -9,29 +9,20 @@ import {
   Space,
   Popconfirm,
   message,
-  Upload,
-  Select,
 } from "antd";
 import {
   EditOutlined,
   DeleteOutlined,
   SearchOutlined,
-  PlusOutlined,
-  LoadingOutlined,
-  PictureOutlined,
-  CloseCircleOutlined,
 } from "@ant-design/icons";
 import instance from "../../services/axiosClient";
-const { Option } = Select;
 
-const ProductTable = () => {
-  const [products, setProducts] = useState([]);
+const CategoryTable = () => {
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [form] = Form.useForm();
-  const [fileList, setFileList] = useState([]);
-  const [categories, setCategories] = useState([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 5,
@@ -39,50 +30,31 @@ const ProductTable = () => {
   const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    fetchProducts();
     fetchCategories();
-  }, [pagination.current, searchText]);
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get(
-        "http://localhost:8088/api/v1/products",
-        {
-          params: {
-            page: pagination.current,
-            limit: pagination.pageSize,
-            search: searchText,
-          },
-        }
-      );
-      setProducts(data.products);
-      setPagination((prev) => ({
-        ...prev,
-        total: data.totalPages * pagination.pageSize,
-      }));
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      message.error("Failed to load products.");
-    }
-    setLoading(false);
-  };
+  }, [pagination.current]);
 
   const fetchCategories = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get(
         "http://localhost:8088/api/v1/categories",
         {
           params: {
-            page: 1,
-            limit: 30,
+            page: pagination.current,
+            limit: pagination.pageSize,
           },
         }
       );
       setCategories(data);
+      setPagination((prev) => ({
+        ...prev,
+        total: data.totalPages * pagination.pageSize,
+      }));
     } catch (error) {
       console.error("Error fetching categories:", error);
+      message.error("Failed to load categories.");
     }
+    setLoading(false);
   };
 
   const handleEdit = (record) => {
@@ -91,119 +63,48 @@ const ProductTable = () => {
     form.setFieldsValue(record);
   };
 
-  const handleDelete = async (productId) => {
+  const handleDelete = async (categoryId) => {
     try {
-      const response = await instance.delete(`products/${productId}`);
-      message.success("Product deleted successfully");
-      console.log(response);
-      fetchProducts();
+      await instance.delete(
+        `http://localhost:8088/api/v1/categories/${categoryId}`
+      );
+      message.success("Category deleted successfully");
+      fetchCategories();
     } catch (error) {
-      console.error("Error deleting product:", error);
-      message.error("Failed to delete product.");
+      console.error("Error deleting category:", error);
+      message.error("Failed to delete category.");
     }
   };
-  // const handleDelete = async (productId) => {
-  //   try {
-  //     const accessToken = localStorage.getItem("token");
-  //     console.log(accessToken);
-  //     const response = await axios.delete(
-  //       `http://localhost:8088/api/v1/products/${productId}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${accessToken}`,
-  //         },
-  //       }
-  //     );
-  //     message.success("Product deleted successfully");
-  //     console.log(response);
-  //     fetchProducts();
-  //   } catch (error) {
-  //     console.error("Error deleting product:", error);
-  //     message.error("Failed to delete product.");
-  //   }
-  // };
 
-  const handleAddOrUpdateProduct = async (values) => {
+  const handleAddOrUpdateCategory = async (values) => {
     setLoading(true);
     try {
-      let productId;
       if (isEditing) {
         await instance.put(
-          `http://localhost:8088/api/v1/products/${values.id}`,
+          `http://localhost:8088/api/v1/categories/${values.id}`,
           values
         );
-        productId = values.id;
-        message.success("Product updated successfully");
+        message.success("Category updated successfully");
       } else {
-        const { data } = await instance.post(
-          "http://localhost:8088/api/v1/products",
-          values
-        );
-        console.log("API Request - Add Product:", {
-          url: "http://localhost:8088/api/v1/products",
-          method: "POST",
-          data: values,
-        }); // Log the API request
-        console.log("API Response - Add Product:", data); // Log the API response
-        productId = data.id;
-        message.success("Product added successfully");
+        await instance.post("http://localhost:8088/api/v1/categories", values);
+        message.success("Category added successfully");
       }
-
-      if (fileList.length > 0) {
-        await uploadImages(productId);
-      }
-      fetchProducts();
+      fetchCategories();
     } catch (error) {
-      console.error("Error saving product:", error);
-      message.error("Failed to save product.");
+      console.error("Error saving category:", error);
+      message.error("Failed to save category.");
     } finally {
       setModalVisible(false);
       setIsEditing(false);
       form.resetFields();
-      setFileList([]);
       setLoading(false);
     }
-  };
-
-  const uploadImages = async (productId) => {
-    const formData = new FormData();
-    fileList.forEach((file) => {
-      formData.append("files", file.originFileObj);
-    });
-
-    try {
-      await instance.post(
-        `http://localhost:8088/api/v1/products/uploads/${productId}`,
-        formData
-      );
-      message.success("Images uploaded successfully");
-    } catch (error) {
-      console.error("Error uploading images:", error);
-      message.error("Failed to upload images");
-    }
-  };
-
-  const deleteImage = async (imageId) => {
-    try {
-      await instance.delete(
-        `http://localhost:8088/api/v1/products/uploads/${imageId}`
-      );
-      message.success("Image deleted successfully");
-    } catch (error) {
-      console.error("Error deleting image:", error);
-      message.error("Failed to delete image");
-    }
-  };
-
-  const handleFileChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
   };
 
   const handleCancel = () => {
     setModalVisible(false);
     setIsEditing(false);
     form.resetFields();
-    setFileList([]);
   };
 
   const columns = [
@@ -213,39 +114,12 @@ const ProductTable = () => {
       key: "id",
     },
     {
-      title: "Name",
+      title: "Tên danh mục",
       dataIndex: "name",
       key: "name",
     },
     {
-      title: "Price",
-      dataIndex: "price",
-      key: "price",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      key: "description",
-    },
-    {
-      title: "Category",
-      dataIndex: "category_id",
-      key: "category_id",
-      render: (category_id) => {
-        const category = categories.find((cat) => cat.id === category_id);
-        return category ? category.name : "";
-      },
-    },
-    {
-      title: "Thumbnail",
-      dataIndex: "thumbnail",
-      key: "thumbnail",
-      render: (thumbnail) => (
-        <img src={thumbnail} alt="Thumbnail" style={{ maxWidth: "50px" }} />
-      ),
-    },
-    {
-      title: "Actions",
+      title: "Hành động",
       key: "actions",
       render: (_, record) => (
         <Space>
@@ -254,14 +128,14 @@ const ProductTable = () => {
             icon={<EditOutlined />}
             onClick={() => handleEdit(record)}
           >
-            Edit
+            Sửa danh mục này
           </Button>
           <Popconfirm
-            title="Are you sure to delete this product?"
+            title="Bạn chắc chắn muốn xoá danh mục này chứ?"
             onConfirm={() => handleDelete(record.id)}
           >
             <Button type="danger" icon={<DeleteOutlined />}>
-              Delete
+              Xoá danh mục này
             </Button>
           </Popconfirm>
         </Space>
@@ -273,7 +147,7 @@ const ProductTable = () => {
     <div>
       <div style={{ marginBottom: 16 }}>
         <Input
-          placeholder="Search products"
+          placeholder="Nhập tên danh mục cần tìm kiếm"
           prefix={<SearchOutlined />}
           allowClear
           onChange={(e) => setSearchText(e.target.value)}
@@ -281,7 +155,9 @@ const ProductTable = () => {
       </div>
 
       <Table
-        dataSource={products}
+        dataSource={categories.filter((category) =>
+          category.name.toLowerCase().includes(searchText.toLowerCase())
+        )}
         columns={columns}
         loading={loading}
         rowKey="id"
@@ -302,92 +178,34 @@ const ProductTable = () => {
           setIsEditing(false);
         }}
       >
-        Add Product
+        Thêm mới danh mục
       </Button>
 
       <Modal
-        title={isEditing ? "Edit Product" : "Add Product"}
+        title={isEditing ? "Sửa danh mục" : "Thêm mới danh mục"}
         visible={modalVisible}
         onCancel={handleCancel}
         footer={null}
       >
-        <Form form={form} onFinish={handleAddOrUpdateProduct} layout="vertical">
+        <Form
+          form={form}
+          onFinish={handleAddOrUpdateCategory}
+          layout="vertical"
+        >
           <Form.Item name="id" hidden>
             <Input />
           </Form.Item>
           <Form.Item
             name="name"
-            label="Name"
+            label="Tên danh mục"
             rules={[
-              { required: true, message: "Please enter the product name" },
+              { required: true, message: "Hãy nhập tên danh mục vào đây" },
             ]}
           >
             <Input />
           </Form.Item>
-          <Form.Item
-            name="price"
-            label="Price"
-            rules={[
-              { required: true, message: "Please enter the product price" },
-            ]}
-          >
-            <Input type="number" />
-          </Form.Item>
-          <Form.Item
-            name="description"
-            label="Description"
-            rules={[
-              {
-                required: true,
-                message: "Please enter the product description",
-              },
-            ]}
-          >
-            <Input.TextArea />
-          </Form.Item>
-          <Form.Item
-            name="category_id"
-            label="Category ID"
-            rules={[
-              { required: true, message: "Please select the product category" },
-            ]}
-          >
-            <Select placeholder="Select a category">
-              {categories.map((category) => (
-                <Option key={category.id} value={category.id}>
-                  {category.name}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item label="Product Images">
-            <Upload
-              listType="picture-card"
-              fileList={fileList}
-              onChange={handleFileChange}
-              beforeUpload={() => false}
-              onPreview={async (file) => {
-                const previewUrl = await axios.get(
-                  `http://localhost:8088/api/v1/products/uploads/${file.id}`
-                );
-                window.open(previewUrl, "_blank");
-              }}
-              onRemove={async (file) => {
-                if (file.id) {
-                  await deleteImage(file.id);
-                }
-              }}
-            >
-              {fileList.length < 5 && (
-                <div>
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Upload</div>
-                </div>
-              )}
-            </Upload>
-          </Form.Item>
           <Button type="primary" htmlType="submit">
-            Save
+            Lưu
           </Button>
         </Form>
       </Modal>
@@ -395,4 +213,4 @@ const ProductTable = () => {
   );
 };
 
-export default ProductTable;
+export default CategoryTable;

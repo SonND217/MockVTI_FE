@@ -8,6 +8,8 @@ import {
   EditOutlined,
   HomeOutlined,
   ShoppingCartOutlined,
+  AppstoreOutlined,
+  BarsOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import { Layout as LayoutAntd, Menu, Button, theme } from "antd";
@@ -38,22 +40,22 @@ const Layout = () => {
       ? [
           {
             key: "/dashboard",
-            icon: <ProfileOutlined />,
+            icon: <UserOutlined />,
             label: "Hồ sơ tài khoản",
           },
           {
             key: "/product-list",
-            icon: <UnorderedListOutlined />,
+            icon: <AppstoreOutlined />,
             label: "Quản lí sản phẩm",
           },
           {
             key: "/order-list",
-            icon: <UnorderedListOutlined />,
+            icon: <ShoppingCartOutlined />,
             label: "Quản lí đơn hàng",
           },
           {
             key: "/category-list",
-            icon: <UnorderedListOutlined />,
+            icon: <BarsOutlined />,
             label: "Quản lí danh mục",
           },
         ]

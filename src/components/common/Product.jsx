@@ -112,6 +112,7 @@ function Product() {
                     src={productImages[index]}
                     alt={product.name}
                   />
+                  <div className="product-name">{product.name}</div>
                   <div className="product-action">
                     <button
                       className="btn btn-outline-dark btn-square"

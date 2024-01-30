@@ -18,16 +18,11 @@ function Checkout() {
   const [cartItems, setCartItems] = useState(storedCartItems);
 
   useEffect(() => {
-    // Lấy thông tin giỏ hàng từ localStorage và cập nhật trạng thái
     setCartItems(storedCartItems);
   }, []);
 
-  const calculateTotal = () => {
-    return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0
-    );
-  };
+  const totalPrice = parseFloat(localStorage.getItem("cartTotalPrice")) || 0;
+
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,7 +33,7 @@ function Checkout() {
       phone_number: phone,
       address: address,
       note: note,
-      total_money: calculateTotal(),
+      total_money: totalPrice,
       shipping_method: shippingMethod,
       payment_method: paymentMethod,
       cart_items: cartItems.map((item) => ({
@@ -54,7 +49,7 @@ function Checkout() {
       );
       message.success("Order placed successfully");
       localStorage.removeItem("cartItems");
-      setTimeout(() => navigate("/user/home"), 1000); // Chuyển hướng sau 3 giây
+      setTimeout(() => navigate("/user/home"), 1000);
     } catch (error) {
       console.error("There was a problem with the axios operation:", error);
       message.error("Failed to place the order");
