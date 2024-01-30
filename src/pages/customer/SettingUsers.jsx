@@ -17,10 +17,10 @@ const SettingUsers = () => {
           `http://localhost:8088/api/v1/users/details`
         );
 
-        // Chuyển đổi giá trị timestamp sang đối tượng Date
-        response.date_of_birth = response.date_of_birth
-          ? new Date(response.date_of_birth)
-          : null;
+        // // Chuyển đổi giá trị timestamp sang đối tượng Date
+        // response.date_of_birth = response.date_of_birth
+        //   ? new Date(response.date_of_birth)
+        //   : null;
 
         setUser(response);
         form.setFieldsValue(response); // Set giá trị mặc định cho biểu mẫu
@@ -35,10 +35,10 @@ const SettingUsers = () => {
   }, [userInfo, form]);
 
   const onFinish = async (values) => {
-    // Chuyển đổi giá trị ngày tháng năm thành timestamp
-    values.date_of_birth = values.date_of_birth
-      ? values.date_of_birth.valueOf() // sử dụng `valueOf` để lấy giá trị timestamp
-      : null;
+    // // Chuyển đổi giá trị ngày tháng năm thành timestamp
+    // values.date_of_birth = values.date_of_birth
+    //   ? values.date_of_birth.valueOf() // sử dụng `valueOf` để lấy giá trị timestamp
+    //   : null;
 
     try {
       const response = await instance.put(
