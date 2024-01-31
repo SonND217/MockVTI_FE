@@ -572,7 +572,7 @@ mark,
 
 .img-fluid {
   max-width: 100%;
-  height: auto;
+  max-height: 300px;
 }
 
 .img-thumbnail {
@@ -10327,4 +10327,16 @@ h6 {
   font-size: 1rem;
   font-weight: 600;
   text-align: center;
+}
+
+.product-img {
+  position: relative;
+  overflow: hidden;
+}
+
+.product-img img {
+  max-width: 100%;
+  max-height: 300px;
+  display: inline-block;
+  vertical-align: middle;
 }
