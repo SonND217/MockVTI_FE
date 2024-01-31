@@ -14,6 +14,7 @@ import HomePage from "../pages/shared/HomePage";
 import HomeUser from "../pages/shared/HomeUser";
 import CartUser from "../pages/shared/CartUser";
 import Checkout from "../components/common/Checkout";
+import DetailProduct from "../components/common/DetailProduct";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "/user/checkout",
         element: <Checkout />,
+      },
+      {
+        path: "/user/detail-product",
+        element: <DetailProduct />,
       },
 
       // {
